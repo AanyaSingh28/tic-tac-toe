@@ -1,0 +1,155 @@
+import React {useStates} from 'react';
+import'./App.css';
+
+const Board = ({squares,onclick})=> (
+  <div className = "board">
+  {squares.map((square, index) => (
+    <Square key = {index} value = {square} onclick={() => onclick(index)} />
+))}
+  </div>
+);
+
+const Square = ({value,onclick}) =>(
+  <button className = "square" onclick = {onclick}>
+  {value}
+  </button>
+);
+
+const Game = () => {
+  const[board,setBoard]=useState(Array(9).fill(null));
+  const[currentPlayer , setCurrentPlayer] = useState('X');
+  const[gameOver , setGameOver] = useState(false);
+
+  const handleclick=(index) => {
+    if(board[index] || gameOver) return;
+
+    const newBoard = [....board];
+    newBoard[index]= currentPlayer;
+    setBoard(newBoard);
+
+    const winner = calculateWinner(newBoard);
+    if(winner)  {
+      setWinner(winner);
+      setGameOver(true);
+    } else if (checkTie(newBoard))  {
+      setGameOver(true);
+    } else {
+      setCurrentPlayer(currentPlayer === 'X'?'O':'X');
+    }
+  };
+
+
+  const calculateWinner = (board) => {
+    const lines = [
+      [0,1,2],
+      [3,4,5],
+      [6,7,8],
+      [0,3,6],
+      [1,4,7],
+      [2,5,8],
+      [0,4,8],
+      [2,4,6],
+      ];
+
+    for (let i=0;i<lines.length;i++) {
+      const[a,b,c]=lines[i];
+      if(board[a] && board[a] ===board[b] && board[a] === board[c])  {
+        return board[a];
+      }
+    }
+    return null;
+  };
+  const checkTie = (board) =>{
+    return board.every((square)=>square!==null);
+  };
+
+  const resetGame = () => {
+    setBoard(Array(9).fill(null));
+    setCurrentPlayer('X');
+    setWinner (null);
+    setGameOver(false);
+  };
+
+  return (
+    <div className = "game">
+    <h1>Tic Tac Toe</h1>
+    <Board squares = {board} onclick = {handleclick}/>
+    <div className = "status">
+    {winner?'Winner:${winner}':gameOver?'it is a tie!':'Next Player:${currentPlayer}'}
+    </div>
+    <button classNmae = "reset-button"onclick = {resetGame}>Reset Game</button>
+    </div>
+  );
+};
+
+export default Game;
+
+//css code//
+.game{
+  text-align:center;
+  margin-top:20px;
+}
+
+.board {
+  display:grid;
+  grid-template-columns:repeat(3,100px);
+  grid-template-rows:repeat(3,100px);
+  gap:5px;
+  margin:20px auto;
+}
+
+.square {
+  font-size:3em;
+  width:100px;
+  height:100px;
+  border:1px so;id #ccc;
+  display:flex;
+  justify-content:center;
+  align-items:center;
+  background-color:#f0f0f0;
+}
+
+.square:hover{
+  background-color:#e0e0e0;
+}
+
+.status {
+  margin-top:20px;
+  font-size:1.5em;
+  }
+
+.reset-button{
+  margin-top:20px;
+  padding:10px 20px;
+  font-size:1em;
+  background-color:#4caf50;
+  color:white;
+  border:none;
+  cursor:pointer;
+}
+
+.reset-button:hover{
+  background-color:#45a049;
+  }
+
+
+  
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+    
+
